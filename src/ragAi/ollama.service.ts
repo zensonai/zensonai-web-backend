@@ -6,7 +6,7 @@ import { ConfigService } from "@nestjs/config";
 @Injectable()
 export class OllamaService {
 
-    private readonly ollamaUrl = "http://localhost:11434";
+    // private readonly ollamaUrl = "http://localhost:11434";
     private readonly gemini: GoogleGenAI;
 
 
@@ -18,19 +18,22 @@ export class OllamaService {
         });
 
     }
+
     async createEmbedding(text: string): Promise<number[]> {
 
-        const response = await axios.post(
-            `${this.ollamaUrl}/api/embed`,
-            {
-                model: "nomic-embed-text",
-                input: text,
-            }
-        );
-        return response.data.embeddings[0];
+        const response = await this.gemini.models.embedContent({
+            model: "text-embedding-004",
+            contents: text,
+        });
+
+        if (!response.embeddings || response.embeddings.length === 0) {
+            throw new Error("Failed to generate embedding");
+        }
+
+        return response.embeddings[0].values ?? [];
     }
 
-
+    
     async generateAnswer(
         question: string,
         context: string,
