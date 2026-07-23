@@ -22,7 +22,7 @@ export class OllamaService {
     async createEmbedding(text: string): Promise<number[]> {
 
         const response = await this.gemini.models.embedContent({
-            model: "text-embedding-004",
+            model: "gemini-embedding-001",
             contents: text,
         });
 
@@ -33,7 +33,7 @@ export class OllamaService {
         return response.embeddings[0].values ?? [];
     }
 
-    
+
     async generateAnswer(
         question: string,
         context: string,
